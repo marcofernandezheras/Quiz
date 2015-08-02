@@ -20,7 +20,14 @@
         </nav>
 
         <section class="main" id="s1">
-            <%- body %>
+            <% if(errors.length > 0) { %>
+            <span id="ErrorMsgs">
+                <% for (var i in errors) { %>
+                    <span><%= errors[i].message %> <br/></span>
+                <% } %>
+            </span>
+            <% } %>
+            <div><%- body %></div>
         </section>
 
         <footer class="main" id="f1">
