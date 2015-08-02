@@ -27,7 +27,7 @@ var sequelize = new Sequelize(DB_name, user, pwd,
 var Quiz = sequelize.import(path.join(__dirname,'quiz'));
 
 exports.Quiz = Quiz;
-
+/*
 sequelize.sync().success(function(){
 
 	Quiz.count().success(function(count){
@@ -45,4 +45,4 @@ sequelize.sync().success(function(){
 			.then(function(){console.log('BBDD inicializada')});
 		};
 	});
-});
+});*/
