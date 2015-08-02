@@ -30,8 +30,11 @@ exports.Quiz = Quiz;
 
 sequelize.sync().success(function(){
 
-	Quiz.count().success(function(count){
-		if(count === 0){
+
+	/*Quiz.count().success(*/
+
+	Quiz.destroy({}).success(function(count){
+		/*if(count === 0){*/
 			Quiz.create({
 				pregunta: 'Capital de Italia',
 				respuesta: 'Roma'
@@ -41,6 +44,6 @@ sequelize.sync().success(function(){
 				respuesta: 'Lisboa'
 			})
 			.then(function(){console.log('BBDD inicializada')});
-		};
+		/*};*/
 	});
 });
