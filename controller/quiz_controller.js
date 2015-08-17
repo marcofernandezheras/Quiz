@@ -121,7 +121,7 @@ exports.statistics = function(req,res,next){
                         for(var z in pregConcoments[x])
                             c+= pregConcoments[x][z];
                     }
-                    statistics.numPreguntasConComments = c;
+                    statistics.numPreguntasConComments = Number(c);
                     statistics.numPreguntasSinComments = numPreguntas - c;
                     statistics.mediaComments = (numCommnets/ numPreguntas);
                     res.render ('quizes/statistics', {statistics: statistics, errors: []});
