@@ -4,12 +4,11 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var session = require('express-session');
 var partials = require('express-partials');
 var methodOverride = require('method-override');
 var routes = require('./routes/index');
-
-
+var moment = require('moment');
 var app = express();
 
 // view engine setup
@@ -22,9 +21,37 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
-app.use(cookieParser());
+app.use(cookieParser('Quiz 2015'));
+app.use(session());
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+app.use(function(req, res, next){
+    if(!req.path.match(/\/login|\/logout|.*favicon\.ico/)){
+        req.session.redir = req.path;
+    }
+    res.locals.session = req.session;
+    next();
+});
+
+app.use(function (req,res,next) {
+    if (req.session.user){
+        if (req.session.user.time){
+            var startDate = moment(req.session.user.time);
+            var endDate = moment(new Date());
+            var secondsDiff = endDate.diff(startDate, 'seconds')
+            if (secondsDiff>20) {
+                delete req.session.user;
+            } else {
+                req.session.user.time = new Date();
+            }
+        } else {
+            req.session.user.time = new Date();
+        }
+    }
+    next();
+});
 
 app.use('/', routes);
 
