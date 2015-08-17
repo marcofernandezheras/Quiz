@@ -99,7 +99,7 @@ exports.destroy = function(req,res){
     .catch(function(error){next(error);});
 };
 
-exports.statistics = function(req,res){
+exports.statistics = function(req,res,next){
     var statistics= {
         numPreguntas:0,
         numPreguntasConComments:0,
@@ -111,16 +111,16 @@ exports.statistics = function(req,res){
     models.Quiz.count()
         .then (function (numPreguntas) { //numero de preguntas
         statistics.numPreguntas = numPreguntas;
-        return models.Comment.count();
-    }).then (function (numComments){
-        statistics.numComments=numComments;
-        statistics.mediaComments = numComments / statistics.numPreguntas;
-        return models.Comment.count( { group : "QuizId"});
-    }).then (function (numPreguntasConComments){
-        statistics.numPreguntasConComments=numPreguntasConComments;
-        statistics.numPreguntasSinComments=statistics.numPreguntas-
-            numPreguntasConComments;
-    }).then(function(){
-            res.render ('quizes/statistics', {statistics: statistics, errors: []});
+        models.Comment.count().then(function(numCommnets){
+            statistics.numComments = numCommnets;
+            models.sequelize.query("SELECT count(Distinct(QuizId)) FROM Comments", { type: models.sequelize.QueryTypes.SELECT})
+                .then(function(pregConcoments){
+                    var c = pregConcoments[0]['count(Distinct(QuizId))'];
+                    statistics.numPreguntasConComments = c;
+                    statistics.numPreguntasSinComments = numPreguntas - c;
+                    statistics.mediaComments = (numCommnets/ numPreguntas);
+                    res.render ('quizes/statistics', {statistics: statistics, errors: []});
+                }).catch(function(error) {next(error);});
+        }).catch(function(error) {next(error);});
     }).catch(function(error) {next(error);});
 };

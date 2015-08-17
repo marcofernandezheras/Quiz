@@ -32,6 +32,7 @@ Quiz.hasMany(Comment);
 
 exports.Quiz = Quiz;
 exports.Comment = Comment;
+exports.sequelize = sequelize;
 
 sequelize.sync();
 /*
