@@ -99,9 +99,28 @@ exports.destroy = function(req,res){
     .catch(function(error){next(error);});
 };
 
+exports.statistics = function(req,res){
+    var statistics= {
+        numPreguntas:0,
+        numPreguntasConComments:0,
+        numPreguntasSinComments:0,
+        numComments:0,
+        mediaComments:0
+    };
 
-
-
-
-
-
+    models.Quiz.count()
+        .then (function (numPreguntas) { //numero de preguntas
+        statistics.numPreguntas = numPreguntas;
+        return models.Comment.count();
+    }).then (function (numComments){
+        statistics.numComments=numComments;
+        statistics.mediaComments = numComments / statistics.numPreguntas;
+        return models.Comment.count( { group : "QuizId"});
+    }).then (function (numPreguntasConComments){
+        statistics.numPreguntasConComments=numPreguntasConComments;
+        statistics.numPreguntasSinComments=statistics.numPreguntas-
+            numPreguntasConComments;
+    }).then(function(){
+            res.render ('quizes/statistics', {statistics: statistics, errors: []});
+    }).catch(function(error) {next(error);});
+};
