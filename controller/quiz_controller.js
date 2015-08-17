@@ -113,7 +113,7 @@ exports.statistics = function(req,res,next){
         statistics.numPreguntas = numPreguntas;
         models.Comment.count().then(function(numCommnets){
             statistics.numComments = numCommnets;
-            models.sequelize.query("SELECT count(Distinct(QuizId)) FROM Comments", { type: models.sequelize.QueryTypes.SELECT})
+            models.sequelize.query('SELECT count(Distinct("QuizId")) FROM "Comments"', { type: models.sequelize.QueryTypes.SELECT})
                 .then(function(pregConcoments){
                     var c = pregConcoments[0]['count(Distinct(QuizId))'];
                     statistics.numPreguntasConComments = c;
